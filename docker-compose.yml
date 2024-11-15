@@ -1,0 +1,35 @@
+version: '3'
+services:
+  app:
+    build: .
+    environment:
+      - NODE_ENV=development
+      - PORT=8000
+      - DB_HOST=db-postgres
+      - DB_USER=postgres
+      - BD_PASSWORD=postgres
+      - DB_NAME=waveup
+      - DB_PORT=5432
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db-postgres
+    networks:
+      - db-network
+
+  db-postgres:
+    image: postgres
+    volumes: 
+      - "./db/postgres:/var/lib/postgresql/data"
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: waveup
+    networks:
+      - db-network
+
+networks:
+  db-network:
