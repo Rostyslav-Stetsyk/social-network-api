@@ -1,8 +1,10 @@
+import { PostsModule } from './posts/posts.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { env } from 'process';
 import { UserEntity } from './users/entity/user.entity';
 import { UsersModule } from './users/users.module';
+import { PostEntity } from './posts/entity/posts.entity';
 
 const ormOptions: TypeOrmModule = {
   type: 'postgres',
@@ -11,7 +13,7 @@ const ormOptions: TypeOrmModule = {
   username: env.DB_USER || 'postgres',
   password: env.DB_PASSWORD || 'postgres',
   database: env.DB_NAME || 'waveup',
-  entities: [UserEntity],
+  entities: [UserEntity, PostEntity],
   synchronize: true,
   logging: true,
   subscribers: [],
@@ -19,7 +21,7 @@ const ormOptions: TypeOrmModule = {
 };
 
 @Module({
-  imports: [TypeOrmModule.forRoot(ormOptions), UsersModule],
+  imports: [PostsModule, TypeOrmModule.forRoot(ormOptions), UsersModule],
   controllers: [],
   providers: [],
 })

@@ -1,30 +1,24 @@
-import { PostEntity } from 'src/posts/entity/posts.entity';
+import { UserEntity } from 'src/users/entity/user.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  OneToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
-export class UserEntity {
+export class PostEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column()
-  email!: string;
+  @ManyToOne(() => UserEntity, (user) => user.id)
+  author!: string;
 
-  @Column()
-  username!: string;
-
-  @Column()
-  password!: string;
-
-  @OneToMany(() => PostEntity, (post) => post.author)
-  posts: PostEntity[];
+  @Column({ type: 'jsonb' })
+  blocks!: Array<{ type: string; data: object }>;
 
   @CreateDateColumn()
   createdAt!: Date;
