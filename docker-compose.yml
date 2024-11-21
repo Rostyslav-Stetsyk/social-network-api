@@ -1,4 +1,4 @@
-version: '3'
+version: '3.9'
 services:
   app:
     build: .
@@ -14,22 +14,43 @@ services:
       - "8000:8000"
     depends_on:
       - db-postgres
+      - redis
     networks:
       - db-network
 
   db-postgres:
-    image: postgres
+    image: postgres:latest
     volumes: 
       - "./db/postgres:/var/lib/postgresql/data"
     restart: always
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: waveup
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=waveup
     networks:
       - db-network
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    command: ["redis-server", "--requirepass", "redis_password"]
+    ports:
+      - "6379:6379"
+    restart: always
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: redis-commander
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PASSWORD=redis_password
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redis
+    restart: always
 
 networks:
   db-network:

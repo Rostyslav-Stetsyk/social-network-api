@@ -5,6 +5,8 @@ import { env } from 'process';
 import { UserEntity } from './users/entity/user.entity';
 import { UsersModule } from './users/users.module';
 import { PostEntity } from './posts/entity/posts.entity';
+import { CacheModule, CacheOptions } from '@nestjs/cache-manager';
+import { redisStore } from 'cache-manager-redis-yet';
 
 const ormOptions: TypeOrmModule = {
   type: 'postgres',
@@ -20,8 +22,29 @@ const ormOptions: TypeOrmModule = {
   migrations: ['src/migrations/*.ts'],
 };
 
+const cacheOptions = {
+  isGlobal: true,
+  useFactory: async (): Promise<CacheOptions> => {
+    const store = await redisStore({
+      socket: {
+        host: 'localhost',
+        port: 6379,
+      },
+      password: 'redis_password',
+    });
+    return {
+      store,
+    };
+  },
+};
+
 @Module({
-  imports: [PostsModule, TypeOrmModule.forRoot(ormOptions), UsersModule],
+  imports: [
+    PostsModule,
+    UsersModule,
+    TypeOrmModule.forRoot(ormOptions),
+    CacheModule.registerAsync(cacheOptions),
+  ],
   controllers: [],
   providers: [],
 })
