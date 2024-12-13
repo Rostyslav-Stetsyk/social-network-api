@@ -14,17 +14,21 @@ export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column()
+  @Column({
+    unique: true,
+  })
   email!: string;
 
-  @Column()
+  @Column({
+    unique: true,
+  })
   username!: string;
 
   @Column()
   password!: string;
 
   @OneToMany(() => PostEntity, (post) => post.author)
-  posts: PostEntity[];
+  posts?: PostEntity[];
 
   @CreateDateColumn()
   createdAt!: Date;

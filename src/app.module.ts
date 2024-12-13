@@ -1,23 +1,23 @@
 import { PostsModule } from './posts/posts.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { env } from 'process';
 import { UserEntity } from './users/entity/user.entity';
 import { UsersModule } from './users/users.module';
 import { PostEntity } from './posts/entity/posts.entity';
 import { CacheModule, CacheOptions } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
+import 'dotenv/config';
 
 const ormOptions: TypeOrmModule = {
   type: 'postgres',
-  host: env.DB_HOST || 'localhost',
-  port: Number(env.DB_PORT) || 5432,
-  username: env.DB_USER || 'postgres',
-  password: env.DB_PASSWORD || 'postgres',
-  database: env.DB_NAME || 'waveup',
+  host: process.env.DB_HOST || 'localhost',
+  port: Number(process.env.DB_PORT) || 5432,
+  username: process.env.DB_USER || 'postgres',
+  password: process.env.DB_PASSWORD || 'postgres',
+  database: process.env.DB_NAME || 'waveup',
   entities: [UserEntity, PostEntity],
-  synchronize: true,
-  logging: true,
+  synchronize: process.env.NODE_ENV === 'development',
+  logging: process.env.NODE_ENV === 'development',
   subscribers: [],
   migrations: ['src/migrations/*.ts'],
 };
@@ -27,10 +27,10 @@ const cacheOptions = {
   useFactory: async (): Promise<CacheOptions> => {
     const store = await redisStore({
       socket: {
-        host: 'localhost',
-        port: 6379,
+        host: process.env.REDIS_HOST || 'localhost',
+        port: Number(process.env.REDIS_PORT) || 6379,
       },
-      password: 'redis_password',
+      password: process.env.REDIS_PASSWORD || 'redis_password',
     });
     return {
       store,
