@@ -27,7 +27,7 @@ WaveUp is an educational backend project for a social networking platform. It de
 
    ```bash
    git clone https://github.com/Rostyslav-Stetsyk/waveup-api.git
-   cd waveup
+   cd waveup-api
    ```
 
 2. **Install Dependencies**
@@ -37,7 +37,7 @@ WaveUp is an educational backend project for a social networking platform. It de
    ```
 
 3. **Set Environment Variables**
-   Create a `.env` file in the root directory and configure it as .env.example
+   Create a `.env` file in the root directory and configure it as `.env.example`
 
 4. **Start the Application**
 
