@@ -1,7 +1,7 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { PostEntity } from './entity/posts.entity';
+import { PostEntity } from './entity/post.entity';
 import { CreatePostDto } from './dto/create-post.dto';
 import { GetAllPostsDto } from './dto/get-all-posts.dto';
 import { PostsListResponseDto } from './dto/posts-list-response.dto';

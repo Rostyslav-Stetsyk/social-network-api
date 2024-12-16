@@ -20,10 +20,7 @@ export default [
   {
     ignores: ['**/.eslintrc.js'],
   },
-  ...compat.extends(
-    'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended',
-  ),
+  ...compat.extends('plugin:@typescript-eslint/recommended'),
   {
     plugins: {
       '@typescript-eslint': typescriptEslintEslintPlugin,

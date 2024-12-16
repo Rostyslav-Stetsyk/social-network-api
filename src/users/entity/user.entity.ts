@@ -1,4 +1,5 @@
-import { PostEntity } from 'src/posts/entity/posts.entity';
+import { PostEntity } from 'src/posts/entity/post.entity';
+import { SessionEntity } from 'src/sessions/entity/session.entity';
 import {
   Column,
   CreateDateColumn,
@@ -29,6 +30,9 @@ export class UserEntity {
 
   @OneToMany(() => PostEntity, (post) => post.author)
   posts?: PostEntity[];
+
+  @OneToMany(() => SessionEntity, (session) => session.user)
+  sessions?: SessionEntity[];
 
   @CreateDateColumn()
   createdAt!: Date;

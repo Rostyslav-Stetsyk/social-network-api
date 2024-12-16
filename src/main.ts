@@ -14,7 +14,7 @@ async function bootstrap(): Promise<void> {
   app.setGlobalPrefix('api');
 
   const config = new DocumentBuilder()
-    .addCookieAuth('accesToken')
+    .addCookieAuth('accessToken')
     .setTitle('Waveup API')
     .setDescription('The social network api')
     .setVersion('1.0')

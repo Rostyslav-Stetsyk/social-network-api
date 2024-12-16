@@ -1,4 +1,4 @@
-import type { PostEntity } from '../entity/posts.entity';
+import type { PostEntity } from '../entity/post.entity';
 
 export class PostsListResponseDto {
   data: PostEntity[];

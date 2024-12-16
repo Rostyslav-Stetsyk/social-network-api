@@ -1,5 +1,9 @@
-import { ConflictException, Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { EntityManager, Repository } from 'typeorm';
 import { UserEntity } from './entity/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
@@ -14,7 +18,10 @@ export class UsersService {
     private usersRepository: Repository<UserEntity>,
   ) {}
 
-  async addUser(userData: CreateUserDto): Promise<UserResponseDto> {
+  async addUser(
+    userData: CreateUserDto,
+    manager: EntityManager,
+  ): Promise<UserResponseDto> {
     const saltOrRounds = 10;
 
     const password = await bcrypt.hash(userData.password, saltOrRounds);
@@ -35,16 +42,33 @@ export class UsersService {
 
     const user = this.usersRepository.create({
       ...userData,
+      username: userData.username || userData.email.split('@')[0],
       password,
     });
 
-    const savedUser = await this.usersRepository.save(user);
+    const savedUser = manager
+      ? await manager.save(user)
+      : await this.usersRepository.save(user);
 
-    return plainToInstance(UserResponseDto, savedUser);
+    return plainToInstance(UserResponseDto, savedUser, {
+      excludeExtraneousValues: true,
+    });
   }
 
-  async findOne(id: string): Promise<UserEntity> {
+  async findOneById(id: string): Promise<UserEntity> {
     const user = await this.usersRepository.findOneBy({ id });
+
+    if (!user) throw new NotFoundException('User not found.');
+
+    return user;
+  }
+
+  async findByUsernameOrEmail(identifier: string): Promise<UserEntity> {
+    const user = await this.usersRepository.findOne({
+      where: [{ username: identifier }, { email: identifier }],
+    });
+
+    if (!user) throw new NotFoundException('User not found.');
 
     return user;
   }

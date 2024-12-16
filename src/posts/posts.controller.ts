@@ -2,7 +2,7 @@ import { Body, Controller, Get, Inject, Post, Query } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { GetAllPostsDto } from './dto/get-all-posts.dto';
-import { PostEntity } from './entity/posts.entity';
+import { PostEntity } from './entity/post.entity';
 import { PostsListResponseDto } from './dto/posts-list-response.dto';
 
 @Controller('posts')
