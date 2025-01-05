@@ -1,5 +1,5 @@
+import { SessionEntity } from 'src/auth/sessions/entity/session.entity';
 import { PostEntity } from 'src/posts/entity/post.entity';
-import { SessionEntity } from 'src/sessions/entity/session.entity';
 import {
   Column,
   CreateDateColumn,
@@ -14,6 +14,9 @@ import {
 export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
+
+  @Column()
+  telephone!: string;
 
   @Column({
     unique: true,

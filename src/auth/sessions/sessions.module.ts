@@ -5,7 +5,6 @@ import { Module } from '@nestjs/common';
 
 @Module({
   imports: [TypeOrmModule.forFeature([SessionEntity])],
-  controllers: [],
   providers: [SessionsService],
   exports: [SessionsService],
 })

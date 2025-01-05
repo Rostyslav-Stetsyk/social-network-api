@@ -1,9 +1,19 @@
-import { Body, Controller, Inject, Ip, Post, Req, Res } from '@nestjs/common';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { UserResponseDto } from 'src/users/dto/user-response.dto';
+import {
+  Body,
+  Controller,
+  Inject,
+  Ip,
+  Post,
+  Req,
+  Res,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Request, Response } from 'express';
 import { LoginDto } from './dto/login.dto';
+import 'dotenv/config';
+import { CreateUserDto } from './users/dto/create-user.dto';
+import { UserResponseDto } from './users/dto/user-response.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -31,14 +41,15 @@ export class AuthController {
       httpOnly: true,
       secure: true,
       sameSite: 'strict',
-      maxAge: 1000 * 60 * 30,
+      maxAge: Number(process.env.ACCESS_TOKEN_LIFETIME) || 1000 * 60 * 30,
     });
 
     res.cookie('refreshToken', tokens.refreshToken, {
       httpOnly: true,
       secure: true,
       sameSite: 'strict',
-      maxAge: 1000 * 60 * 60 * 24 * 7,
+      maxAge:
+        Number(process.env.REFRESH_TOKEN_LIFETIME) || 1000 * 60 * 60 * 24 * 7,
     });
 
     return user;
@@ -58,20 +69,50 @@ export class AuthController {
         userAgent: req.headers['user-agent'],
       },
     });
-    console.log(tokens);
 
     res.cookie('accessToken', tokens.accessToken, {
       httpOnly: true,
       secure: true,
       sameSite: 'strict',
-      maxAge: 1000 * 60 * 30,
+      maxAge: Number(process.env.ACCESS_TOKEN_LIFETIME) || 1000 * 60 * 30,
     });
 
     res.cookie('refreshToken', tokens.refreshToken, {
       httpOnly: true,
       secure: true,
       sameSite: 'strict',
-      maxAge: 1000 * 60 * 60 * 24 * 7,
+      maxAge:
+        Number(process.env.REFRESH_TOKEN_LIFETIME) || 1000 * 60 * 60 * 24 * 7,
+    });
+  }
+
+  @Post('refresh')
+  async refresh(
+    @Req() req: Request,
+    @Ip() clientIp: string,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<void> {
+    const refreshToken = req.cookies['refreshToken'];
+    if (!refreshToken) throw new UnauthorizedException();
+
+    const tokens = await this.authService.refreshSession(refreshToken, {
+      ip: clientIp,
+      userAgent: req.headers['user-agent'],
+    });
+
+    res.cookie('accessToken', tokens.accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: Number(process.env.ACCESS_TOKEN_LIFETIME) || 1000 * 60 * 30,
+    });
+
+    res.cookie('refreshToken', tokens.refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      maxAge:
+        Number(process.env.REFRESH_TOKEN_LIFETIME) || 1000 * 60 * 60 * 24 * 7,
     });
   }
 }

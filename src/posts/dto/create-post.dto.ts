@@ -1,16 +1,18 @@
 import { Type } from 'class-transformer';
 import {
   IsArray,
+  IsNotEmptyObject,
   IsObject,
   IsString,
   IsUUID,
   ValidateNested,
 } from 'class-validator';
 
-class Block {
+export class PostBlockDto {
   @IsString()
   type: string;
 
+  @IsNotEmptyObject()
   @IsObject()
   data: object;
 }
@@ -21,6 +23,6 @@ export class CreatePostDto {
 
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => Block)
-  blocks: Block[];
+  @Type(() => PostBlockDto)
+  blocks: PostBlockDto[];
 }

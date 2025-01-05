@@ -1,13 +1,13 @@
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
-import { SessionsService } from 'src/sessions/sessions.service';
-import { UsersService } from 'src/users/users.service';
 import { DataSource } from 'typeorm';
-import { UserResponseDto } from 'src/users/dto/user-response.dto';
 import { LoginDto } from './dto/login.dto';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { CreateSessionDto } from 'src/sessions/dto/create-session.dto';
-import { NewSessionResponseDto } from 'src/sessions/dto/session-response.dto';
 import * as bcrypt from 'bcrypt';
+import { SessionsService } from './sessions/sessions.service';
+import { CreateSessionDto } from './sessions/dto/create-session.dto';
+import { NewSessionResponseDto } from './sessions/dto/session-response.dto';
+import { UsersService } from './users/users.service';
+import { CreateUserDto } from './users/dto/create-user.dto';
+import { UserResponseDto } from './users/dto/user-response.dto';
 
 @Injectable()
 export class AuthService {
@@ -75,5 +75,21 @@ export class AuthService {
     });
 
     return tokens;
+  }
+
+  async refreshSession(
+    refreshToken: string,
+    sessionData: Omit<CreateSessionDto, 'user'>,
+  ): Promise<NewSessionResponseDto> {
+    const tokens = await this.sessionsService.updateSession(
+      refreshToken,
+      sessionData,
+    );
+
+    return tokens;
+  }
+
+  async getUserById(id: string): Promise<UserResponseDto> {
+    return this.usersServise.findOneById(id);
   }
 }

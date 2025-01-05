@@ -1,5 +1,12 @@
-import { UserEntity } from 'src/users/entity/user.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { UserEntity } from 'src/auth/users/entity/user.entity';
+import {
+  Column,
+  DeleteDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class SessionEntity {
@@ -20,4 +27,10 @@ export class SessionEntity {
 
   @Column()
   userAgent?: string;
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
+
+  @UpdateDateColumn()
+  updatedAt!: Date;
 }
