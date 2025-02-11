@@ -1,14 +1,14 @@
-FROM node:20 AS builder
-COPY . /app
+FROM node:20-alpine AS builder
 WORKDIR /app
-RUN npm install
-CMD [ "npm", "run", "build" ]
+COPY package*.json ./
+RUN npm ci --omit=dev && npm cache clean --force
+COPY . .
+RUN npm run build
 
-FROM node:20 AS runner
-COPY --from=builder /app/dist /app/dist
-COPY package*.json /app
+FROM node:20-alpine AS runner
 WORKDIR /app
-RUN npm install --omit=dev
+COPY --from=builder /app/dist ./dist
+COPY package*.json ./
+RUN npm ci --omit=dev && npm cache clean --force
 EXPOSE 8000
-CMD [ "npm", "run", "start:prod" ]
-
+CMD ["npm", "run", "start:prod"]
