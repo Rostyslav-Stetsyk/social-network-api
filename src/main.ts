@@ -6,13 +6,16 @@ import {
   type OpenAPIObject,
   SwaggerModule,
 } from '@nestjs/swagger';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import 'reflect-metadata';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
 
   app.setGlobalPrefix('api');
+  app.enableVersioning({
+    type: VersioningType.URI,
+  });
 
   const config = new DocumentBuilder()
     .addCookieAuth('accessToken')
@@ -20,9 +23,14 @@ async function bootstrap(): Promise<void> {
     .setDescription('The social network api')
     .setVersion('1.0')
     .build();
+
   const documentFactory = (): OpenAPIObject =>
     SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, documentFactory);
+
+  console.log(
+    `Docs available at http://localhost:${process.env.APP_PORT ?? 3000}/api/docs`,
+  );
 
   app.useGlobalPipes(
     new ValidationPipe({

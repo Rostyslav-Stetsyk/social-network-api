@@ -15,7 +15,10 @@ import 'dotenv/config';
 import { CreateUserDto } from './users/dto/create-user.dto';
 import { UserResponseDto } from './users/dto/user-response.dto';
 
-@Controller('auth')
+@Controller({
+  version: '1',
+  path: 'auth',
+})
 export class AuthController {
   constructor(
     @Inject(AuthService)

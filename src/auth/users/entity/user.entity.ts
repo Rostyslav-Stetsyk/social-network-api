@@ -15,8 +15,10 @@ export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column()
-  telephone!: string;
+  @Column({
+    default: '',
+  })
+  telephone?: string;
 
   @Column({
     unique: true,

@@ -15,7 +15,10 @@ import { PostsListResponseDto } from './dto/posts-list-response.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { User } from 'src/common/decorators/user.decorator';
 
-@Controller('posts')
+@Controller({
+  version: '1',
+  path: 'posts',
+})
 export class PostsController {
   constructor(
     @Inject(PostsService)

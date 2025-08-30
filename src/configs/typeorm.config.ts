@@ -7,7 +7,7 @@ export const typeOrmConfig: DataSourceOptions = {
   port: Number(process.env.DB_PORT) || 5432,
   username: process.env.DB_USER || 'postgres',
   password: process.env.DB_PASSWORD || 'postgres',
-  database: process.env.DB_NAME || 'mydb',
+  database: process.env.DB_NAME || 'waveup',
   entities: ['dist/**/*.entity{.ts,.js}'],
   migrations: ['dist/migrations/*.js'],
   migrationsRun: process.env.NODE_ENV === 'production',
