@@ -66,7 +66,6 @@ export class SessionsService {
       const session = await this.sessionsRepository.findOneBy({
         refreshToken,
       });
-      console.log(session.deletedAt);
 
       if (
         !session ||
