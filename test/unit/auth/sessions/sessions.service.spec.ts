@@ -1,9 +1,9 @@
-import { Test, type TestingModule } from '@nestjs/testing';
-import { SessionsService } from 'src/auth/sessions/sessions.service';
-import { SessionEntity } from 'src/auth/sessions/entity/session.entity';
-import { JwtService } from '@nestjs/jwt';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { Test, type TestingModule } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { SessionEntity } from 'src/auth/sessions/entity/session.entity';
+import { SessionsService } from 'src/auth/sessions/sessions.service';
 import type { Repository } from 'typeorm';
 
 describe('SessionsService', () => {
