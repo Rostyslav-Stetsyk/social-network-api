@@ -7,13 +7,14 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { PostsService } from './posts.service';
-import { PostBlockDto } from './dto/create-post.dto';
-import { GetAllPostsDto } from './dto/get-all-posts.dto';
-import { PostEntity } from './entity/post.entity';
-import { PostsListResponseDto } from './dto/posts-list-response.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { User } from 'src/common/decorators/user.decorator';
+
+import { PostBlockDto } from './dto/create-post.dto';
+import { GetAllPostsDto } from './dto/get-all-posts.dto';
+import { PostsListResponseDto } from './dto/posts-list-response.dto';
+import { PostEntity } from './entity/post.entity';
+import { PostsService } from './posts.service';
 
 @Controller({
   version: '1',

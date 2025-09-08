@@ -1,3 +1,5 @@
+import 'dotenv/config';
+
 import {
   Body,
   Controller,
@@ -8,10 +10,10 @@ import {
   Res,
   UnauthorizedException,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
 import { Request, Response } from 'express';
+
+import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
-import 'dotenv/config';
 import { CreateUserDto } from './users/dto/create-user.dto';
 import { UserResponseDto } from './users/dto/user-response.dto';
 

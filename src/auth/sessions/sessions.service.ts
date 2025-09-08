@@ -1,12 +1,13 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { NewSessionResponseDto as SessionResponseDto } from './dto/session-response.dto';
-import { SessionEntity } from './entity/session.entity';
-import { EntityManager, Repository } from 'typeorm';
-import { CreateSessionDto } from './dto/create-session.dto';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
 import { isUUID } from 'class-validator';
+import { EntityManager, Repository } from 'typeorm';
+
+import { CreateSessionDto } from './dto/create-session.dto';
+import { NewSessionResponseDto as SessionResponseDto } from './dto/session-response.dto';
+import { SessionEntity } from './entity/session.entity';
 
 @Injectable()
 export class SessionsService {

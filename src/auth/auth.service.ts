@@ -1,13 +1,14 @@
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
-import { DataSource } from 'typeorm';
-import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
-import { SessionsService } from './sessions/sessions.service';
+import { DataSource } from 'typeorm';
+
+import { LoginDto } from './dto/login.dto';
 import { CreateSessionDto } from './sessions/dto/create-session.dto';
 import { NewSessionResponseDto } from './sessions/dto/session-response.dto';
-import { UsersService } from './users/users.service';
+import { SessionsService } from './sessions/sessions.service';
 import { CreateUserDto } from './users/dto/create-user.dto';
 import { UserResponseDto } from './users/dto/user-response.dto';
+import { UsersService } from './users/users.service';
 
 @Injectable()
 export class AuthService {

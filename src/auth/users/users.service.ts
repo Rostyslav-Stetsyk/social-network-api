@@ -3,13 +3,14 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { EntityManager, Repository } from 'typeorm';
-import { UserEntity } from './entity/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import { plainToInstance } from 'class-transformer';
+import { EntityManager, Repository } from 'typeorm';
+
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserResponseDto } from './dto/user-response.dto';
-import { plainToInstance } from 'class-transformer';
+import { UserEntity } from './entity/user.entity';
 
 @Injectable()
 export class UsersService {

@@ -1,11 +1,13 @@
-import { AuthModule } from './auth/auth.module';
-import { PostsModule } from './posts/posts.module';
+import 'dotenv/config';
+
+import { CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CacheModule } from '@nestjs/cache-manager';
-import { typeOrmConfig } from './configs/typeorm.config';
+
+import { AuthModule } from './auth/auth.module';
 import cacheOptions from './configs/cache.config';
-import 'dotenv/config';
+import { typeOrmConfig } from './configs/typeorm.config';
+import { PostsModule } from './posts/posts.module';
 
 @Module({
   imports: [
