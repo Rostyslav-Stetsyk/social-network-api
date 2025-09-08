@@ -7,12 +7,12 @@ services:
       - APP_PORT=${APP_PORT}
       - DB_HOST=db-postgres
       - DB_USER=${DB_USER}
-      - BD_PASSWORD=${DB_PASSWORD}
+      - BD_PASS=${DB_PASS}
       - DB_NAME=${DB_NAME}
       - DB_PORT=${DB_PORT}
       - REDIS_HOST=redis
       - REDIS_PORT=${REDIS_PORT}
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_PASS=${REDIS_PASS}
     ports:
       - "${APP_PORT}:${APP_PORT}"
     depends_on:
@@ -31,7 +31,7 @@ services:
     restart: always
     environment:
       - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_PASSWORD=${DB_PASS}
       - POSTGRES_DB=${DB_NAME}
     networks:
       - db-network
@@ -39,7 +39,8 @@ services:
   redis:
     image: redis:latest
     container_name: redis
-    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}"]
+    command: >
+      redis-server "user ${REDIS_USER} on >${REDIS_PASS} ~* +@all"
     ports:
       - "${REDIS_PORT}:6379"
     restart: always
@@ -51,7 +52,7 @@ services:
     container_name: redis-commander
     environment:
       - REDIS_HOST=redis
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_PASS=${REDIS_PASS}
     ports:
       - "8081:8081"
     depends_on:

@@ -1,6 +1,7 @@
+import 'dotenv/config';
+
 import type { CacheOptions } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
-import 'dotenv/config';
 
 const cacheOptions = {
   isGlobal: true,
@@ -10,7 +11,8 @@ const cacheOptions = {
         host: process.env.REDIS_HOST || 'localhost',
         port: Number(process.env.REDIS_PORT) || 6379,
       },
-      password: process.env.REDIS_PASSWORD || 'redis_password',
+      username: process.env.REDIS_USER || 'default',
+      password: process.env.REDIS_PASS,
     });
     return {
       store,
