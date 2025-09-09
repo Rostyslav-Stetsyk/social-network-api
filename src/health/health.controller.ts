@@ -6,6 +6,7 @@ import {
   HealthCheckService,
   HealthIndicatorResult,
   HealthIndicatorService,
+  MemoryHealthIndicator,
   TypeOrmHealthIndicator,
 } from '@nestjs/terminus';
 import { RedisCache } from 'cache-manager-redis-yet';
@@ -19,17 +20,32 @@ export class HealthController {
     @Inject(CACHE_MANAGER)
     private cacheManager: RedisCache,
     private healthIndicatorService: HealthIndicatorService,
+    private memory: MemoryHealthIndicator,
   ) {}
   @Get('health')
   @HealthCheck()
   async check(): Promise<{ status: string }> {
     return this.health.check([
       (): Promise<HealthIndicatorResult> => this.db.pingCheck('postgres'),
+
+      (): Promise<HealthIndicatorResult> =>
+        this.memory.checkHeap(
+          'memory_heap',
+          Number(process.env.HEALTH_HEAP_LIMIT) || 200 * 1024 * 1024,
+        ),
+
+      (): Promise<HealthIndicatorResult> =>
+        this.memory.checkRSS(
+          'memory_rss',
+          Number(process.env.HEALTH_RSS_LIMIT) || 500 * 1024 * 1024,
+        ),
+
       (): Promise<HealthIndicatorResult> =>
         this.disk.checkStorage('storage', {
           thresholdPercent: 0.9,
           path: process.cwd(),
         }),
+
       async (): Promise<HealthIndicatorResult> => {
         const indicator = this.healthIndicatorService.check('redis');
         const isHealthy = await this.cacheManager.store.client.ping();
