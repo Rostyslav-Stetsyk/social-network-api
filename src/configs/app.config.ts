@@ -28,6 +28,7 @@ export function configureApp(app: INestApplication): INestApplication {
   );
 
   app.use(cookieParser());
+  app.enableShutdownHooks();
 
   return app;
 }

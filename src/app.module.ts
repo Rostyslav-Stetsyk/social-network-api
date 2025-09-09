@@ -7,10 +7,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import cacheOptions from './configs/cache.config';
 import { typeOrmConfig } from './configs/typeorm.config';
+import { HealthModule } from './health/health.module';
 import { PostsModule } from './posts/posts.module';
 
 @Module({
   imports: [
+    HealthModule,
     AuthModule,
     PostsModule,
     TypeOrmModule.forRoot(typeOrmConfig),

@@ -40,12 +40,13 @@ describe('AppController (e2e)', () => {
     await stopContainers();
     await app.close();
   });
+  describe('/api/docs [GET]', () => {
+    it('should return 200', async () => {
+      const server = app.getHttpServer();
 
-  it('/api/docs [GET]', async () => {
-    const server = app.getHttpServer();
+      const response = await request(server).get('/api/docs');
 
-    const response = await request(server).get('/api/docs');
-
-    expect(response.status).toBe(200);
+      expect(response.status).toBe(200);
+    });
   });
 });
