@@ -10,10 +10,11 @@ async function bootstrap(): Promise<void> {
 
   configureApp(app);
 
-  console.log(
-    `Docs available at http://localhost:${process.env.APP_PORT ?? 3000}/api/docs`,
-  );
+  const baseUrl =
+    process.env.APP_URL ?? `http://localhost:${process.env.APP_PORT ?? 3000}`;
 
   await app.listen(process.env.APP_PORT ?? 3000);
+
+  console.log(`Docs available at ${baseUrl}/api/docs`);
 }
 bootstrap();

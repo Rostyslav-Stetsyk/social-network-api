@@ -4,7 +4,7 @@ import { Test, type TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { SessionEntity } from 'src/auth/sessions/entity/session.entity';
 import { SessionsService } from 'src/auth/sessions/sessions.service';
-import type { Repository } from 'typeorm';
+import type { EntityManager, Repository } from 'typeorm';
 
 describe('SessionsService', () => {
   let service: SessionsService;
@@ -12,6 +12,7 @@ describe('SessionsService', () => {
     Record<keyof Repository<SessionEntity>, jest.Mock>
   >;
   let mockJwtService: { sign: jest.Mock; verify: jest.Mock };
+  let mockEntityManager: EntityManager;
 
   beforeEach(async () => {
     mockSessionsRepository = {
@@ -23,6 +24,10 @@ describe('SessionsService', () => {
       sign: jest.fn().mockReturnValue('signed-token'),
       verify: jest.fn(),
     };
+
+    mockEntityManager = {
+      save: jest.fn(),
+    } as unknown as jest.Mocked<EntityManager>;
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -39,7 +44,7 @@ describe('SessionsService', () => {
   });
 
   describe('createSession', () => {
-    it('should create and save session', async () => {
+    it('should create and save session without entityManager', async () => {
       const dto = {
         user: '550e8400-e29b-41d4-a716-446655440000',
         ip: '127.0.0.1',
@@ -58,6 +63,35 @@ describe('SessionsService', () => {
       expect(mockSessionsRepository.save).toHaveBeenCalledWith(
         expect.any(SessionEntity),
       );
+      expect(mockEntityManager.save).not.toHaveBeenCalled();
+      expect(result).toMatchObject({
+        accessToken: 'signed-token',
+        refreshToken: 'signed-token',
+      });
+    });
+
+    it('should create and save session with entityManager', async () => {
+      const dto = {
+        user: '550e8400-e29b-41d4-a716-446655440000',
+        ip: '127.0.0.1',
+        userAgent: 'chrome',
+      };
+      const saved = {
+        ...dto,
+        accessToken: 'signed-token',
+        refreshToken: 'signed-token',
+      };
+      mockEntityManager = {
+        save: jest.fn().mockResolvedValue(saved),
+      } as unknown as jest.Mocked<EntityManager>;
+
+      const result = await service.createSession(dto, mockEntityManager);
+
+      expect(mockJwtService.sign).toHaveBeenCalledTimes(2);
+      expect(mockEntityManager.save).toHaveBeenCalledWith(
+        expect.any(SessionEntity),
+      );
+      expect(mockSessionsRepository.save).not.toHaveBeenCalled();
       expect(result).toMatchObject({
         accessToken: 'signed-token',
         refreshToken: 'signed-token',
@@ -105,6 +139,17 @@ describe('SessionsService', () => {
     it('should throw if token is expired', async () => {
       mockJwtService.verify.mockReturnValue({
         sub: '550e8400-e29b-41d4-a716-446655440000',
+        exp: Date.now() / 1000 - 10,
+      });
+
+      await expect(service.updateSession('refresh', {})).rejects.toThrow(
+        UnauthorizedException,
+      );
+    });
+
+    it('should throw if token sub is invalid', async () => {
+      mockJwtService.verify.mockReturnValue({
+        sub: 'user-123',
         exp: Date.now() / 1000 - 10,
       });
 
